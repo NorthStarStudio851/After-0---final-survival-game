@@ -1,10 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Fades the screen and hands over to the loading scene. It does not care what asked for it -
+/// a TerrainExit, a button, anything - so hook OnExitTriggered to BeginExit in the Inspector.
+/// </summary>
 public class OvermapTransition : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private FogExit fogExit;
     [SerializeField] private CanvasGroup fadeScreen;
 
     [Header("Destination")]
@@ -17,20 +20,13 @@ public class OvermapTransition : MonoBehaviour
 
     private void OnEnable()
     {
-        if (fadeScreen != null)
-        {
-            fadeScreen.alpha = 0f;
-            fadeScreen.blocksRaycasts = false;
-        }
+        if (fadeScreen == null) return;
 
-        if (fogExit != null) fogExit.OnExitTriggered.AddListener(BeginExit);
+        fadeScreen.alpha = 0f;
+        fadeScreen.blocksRaycasts = false;
     }
 
-    private void OnDisable()
-    {
-        if (fogExit != null) fogExit.OnExitTriggered.RemoveListener(BeginExit);
-    }
-
+    /// <summary>Wire this to TerrainExit.OnExitTriggered.</summary>
     public void BeginExit()
     {
         if (running) return;
